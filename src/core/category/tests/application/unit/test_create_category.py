@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock
 import pytest
-from src.core.category.application.exceptions import InvalidCategoryData
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
-from src.core.category.application.create_category import CreateCategory, CreateCategoryRequest, CreateCategoryResponse
+from core.category.application.use_cases.create_category import CreateCategory, CreateCategoryRequest, CreateCategoryResponse
+from core.category.application.use_cases.exceptions import InvalidCategoryData
+from core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
 
 
 class TestCreateCategory:

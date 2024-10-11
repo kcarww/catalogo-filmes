@@ -1,5 +1,5 @@
-from src.core.category.application.create_category import CreateCategory, CreateCategoryRequest, CreateCategoryResponse
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from core.category.application.use_cases.create_category import CreateCategory, CreateCategoryRequest, CreateCategoryResponse
+from core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
 
 
 class TestCreateCategory:
