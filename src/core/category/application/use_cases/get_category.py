@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from core.category.application.category_repository import CategoryRepository
+from core.category.application.use_cases.exceptions import CategoryNotFound
 
 
 @dataclass
@@ -25,6 +26,10 @@ class GetCategory:
         
     def execute(self, request: GetCategoryRequest) -> GetCategoryResponse:
         category = self.repository.get_by_id(id=request.id)
+        
+        if category is None:
+            raise CategoryNotFound(f"Category with {request.id} not found")
+        
         return GetCategoryResponse(
             id=category.id,
             name=category.name,
