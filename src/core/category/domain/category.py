@@ -42,5 +42,3 @@ class Category:
     def deactivate(self):
         self.is_active = False
         self.validate()
-
-

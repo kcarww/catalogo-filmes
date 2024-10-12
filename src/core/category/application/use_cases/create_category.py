@@ -6,17 +6,16 @@ from core.category.application.use_cases.exceptions import InvalidCategoryData
 from core.category.domain.category import Category
 
 
-
 @dataclass
 class CreateCategoryRequest:
     name: str
     description: str = ""
     is_active: bool = True
 
+
 @dataclass
 class CreateCategoryResponse:
     id: UUID
-
 
 
 class CreateCategory:
@@ -28,12 +27,11 @@ class CreateCategory:
             category = Category(
                 name=request.name,
                 description=request.description,
-                is_active=request.is_active
+                is_active=request.is_active,
             )
 
         except ValueError as error:
             raise InvalidCategoryData(error) from error
-        
+
         self.repository.save(category)
         return CreateCategoryResponse(id=category.id)
-

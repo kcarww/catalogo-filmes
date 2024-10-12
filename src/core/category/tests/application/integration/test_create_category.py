@@ -1,4 +1,8 @@
-from core.category.application.use_cases.create_category import CreateCategory, CreateCategoryRequest, CreateCategoryResponse
+from core.category.application.use_cases.create_category import (
+    CreateCategory,
+    CreateCategoryRequest,
+    CreateCategoryResponse,
+)
 from core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
 
 
@@ -7,9 +11,7 @@ class TestCreateCategory:
         repository = InMemoryCategoryRepository()
         use_case = CreateCategory(repository=repository)
         request = CreateCategoryRequest(
-            name="movie",
-            description="movie",
-            is_active=True
+            name="movie", description="movie", is_active=True
         )
 
         category_id = use_case.execute(request)
@@ -21,8 +23,6 @@ class TestCreateCategory:
         assert saved_category.name == "movie"
         assert saved_category.description == "movie"
         assert saved_category.is_active is True
-        
-        
 
     # def test_create_category_with_invalid_data(self):
     #     use_case = CreateCategory(repository=MagicMock(InMemoryCategoryRepository))
