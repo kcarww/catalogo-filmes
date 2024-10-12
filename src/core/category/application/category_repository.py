@@ -10,8 +10,12 @@ class CategoryRepository(ABC):
     
     @abstractmethod
     def get_by_id(self, id: UUID) -> Category | None:
-        pass
+        raise NotImplementedError
     
     @abstractmethod
     def delete(self, id: UUID) -> None:
-        pass
+        raise NotImplementedError
+    
+    @abstractmethod
+    def update(self, category: Category) -> None:
+        raise NotImplementedError
