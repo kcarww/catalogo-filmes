@@ -9,5 +9,9 @@ class CategoryRepository(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def get_by_id(self, id: UUID) -> Category:
+    def get_by_id(self, id: UUID) -> Category | None:
+        pass
+    
+    @abstractmethod
+    def delete(self, id: UUID) -> None:
         pass
