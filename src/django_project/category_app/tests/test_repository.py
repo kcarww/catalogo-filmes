@@ -22,3 +22,5 @@ class TestSave:
         assert category_db.name == category.name
         assert category_db.description == category.description
         assert category_db.is_active == category.is_active
+        
+        
