@@ -1,1 +1,16 @@
 GET http://localhost:8000/api/categories
+
+
+###
+
+GET http://localhost:8000/api/categories/a92a8826-9f73-43a9-8f7e-8ad41f91a4c8
+
+###
+
+POST http://localhost:8000/api/categories/
+Content-Type: application/json
+
+{
+  "name": "Category 2",
+  "description": "Category 2 description"
+}
