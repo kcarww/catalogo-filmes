@@ -4,6 +4,8 @@
     },
     "python.analysis.autoImportCompletions": true,
     "python.testing.pytestArgs": [
+        "-v",
+        "-s",
         "."
     ],
     "python.testing.unittestEnabled": false,

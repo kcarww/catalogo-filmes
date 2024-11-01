@@ -156,21 +156,22 @@ class TestUpdateAPI:
                 "name": "movie edited",
                 "description": "description edited",
                 "is_active": True
-            }
+            },format="json"
         )
         
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
     def test_when_category_does_not_exist_then_return_404(self):
-        url = f'/api/categories/{uuid.uuid4()}'
+        url = f'/api/categories/{uuid.uuid4()}/'
         response = APIClient().put(
             url,
             data = {
-                "name": "movie",
-                "category": "cateogry",
+                "name": "movie ----",
+                "description": "categoryyaaa",
                 "is_active": True
-            }
+            },
+            format="json"
         )
         
         assert response.status_code == status.HTTP_404_NOT_FOUND

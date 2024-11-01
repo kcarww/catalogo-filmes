@@ -44,4 +44,9 @@ class DjangoORMCategoryRepository(CategoryRepository):
         ]
         
     def update(self, category: Category) -> None:
-        ...
+        self.category_model.objects.filter(id=category.id)\
+            .update(
+                name=category.name,
+                description=category.description,
+                is_active=category.is_active
+            )

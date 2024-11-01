@@ -3,10 +3,14 @@ import pytest
 from rest_framework.test import APIClient
 
 
+@pytest.fixture
+def api_client() -> APIClient:
+    return APIClient()
+
+
 @pytest.mark.django_db
 class TestCreateAndEditCategory:
-    def test_user_can_create_and_edit_category(self):
-        api_client = APIClient()
+    def test_user_can_create_and_edit_category(self, api_client: APIClient):
         list_response = api_client.get('/api/categories/')
         assert list_response.data == {"data": []}
 
@@ -32,23 +36,24 @@ class TestCreateAndEditCategory:
             ]
         }
 
-        update_request = api_client.put(
-            f'/api/categories/{created_category_id}/',
-            data={
-                "name": "edited",
-                "description": "edited",
-                "is_active": False
-            }
+        edit_response = api_client.put(
+            f"/api/categories/{created_category_id}/",
+            {
+                "name": "Documentary",
+                "description": "Documentary description",
+                "is_active": True,
+            },
+            format="json"
         )
-        assert update_request.status_code == 204
+        assert edit_response.status_code == 204
         list_response = api_client.get('/api/categories/')
         assert list_response.data == {
             "data": [
                 {
                     "id": created_category_id,
-                    "name": "edited",
-                    "description": "edited",
-                    "is_active": False
+                    "name": "Documentary",
+                    "description": "Documentary description",
+                    "is_active": True,
                 }
             ]
         }

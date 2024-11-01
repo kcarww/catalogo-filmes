@@ -3,7 +3,7 @@ GET http://localhost:8000/api/categories
 
 ###
 
-GET http://localhost:8000/api/categories/a92a8826-9f73-43a9-8f7e-8ad41f91a4c8
+GET http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4
 
 ###
 
@@ -17,11 +17,11 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8000/api/categories/a92a8826-9f73-43a9-8f7e-8ad41f91a4c8/
+PUT http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4/
 Content-Type: application/json
 
 {
-  "name": "Category 2",
-  "description": "Category 2 description",
-  "is_active": True
+  "name": "-----> edited <---",
+  "description": "----> Category 2 description",
+  "is_active": true
 }

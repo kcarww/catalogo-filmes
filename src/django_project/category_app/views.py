@@ -1,3 +1,4 @@
+from uuid import UUID
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.request import Request
@@ -59,21 +60,20 @@ class CategoryViewSet(viewsets.ViewSet):
             data=CreateCategoryResponseSerializer(instance=category_output).data
         )
         
-    def update(self, request: Request, pk=None) -> Response:
-        
+    def update(self, request: Request, pk: UUID = None) -> Response:
         serializer = UpdateCategoryRequestSerializer(
             data={
-                **request.data.dict(),
+                **request.data,
                 "id": pk
             }
         )
         serializer.is_valid(raise_exception=True)
+        print('PASSOU AQUI ----------')
         category_input = UpdateCategoryRequest(**serializer.validated_data)
         use_case = UpdateCategory(repository=DjangoORMCategoryRepository())
         try: 
             use_case.execute(request=category_input)
         except CategoryNotFound:
-            print("Category not found")
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(status=status.HTTP_204_NO_CONTENT)
