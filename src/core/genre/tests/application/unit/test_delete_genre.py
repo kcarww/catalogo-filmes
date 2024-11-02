@@ -2,6 +2,7 @@ from unittest.mock import create_autospec
 import uuid
 import pytest
 
+from core.genre.application.exceptions import GenreNotFound
 from core.genre.application.use_cases.delete_genre import DeleteGenre
 from core.genre.domain.genre import Genre
 from core.genre.domain.genre_repository import GenreRepository
@@ -27,5 +28,5 @@ class TestDeleteGenre:
 
         use_case = DeleteGenre(repository=mock_genre_repository)
 
-        with pytest.raises(Exception, match="Genre with id .* not found"):
+        with pytest.raises(GenreNotFound, match="Genre with id .* not found"):
             use_case.execute(DeleteGenre.Input(id=uuid.uuid4()))
