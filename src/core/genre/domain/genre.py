@@ -48,3 +48,7 @@ class Genre:
     def remove_category(self, category_id: UUID):
         self.categories.remove(category_id)
         self.validate()
+        
+    def update_categories(self, category_ids: set[UUID]):
+        self.categories = category_ids
+        self.validate()
