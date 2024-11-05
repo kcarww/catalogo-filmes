@@ -16,7 +16,8 @@ class DjangoORMGenreRepository(GenreRepository):
             
     def get_by_id(self, id: UUID) -> Genre | None:
         try:
-            genre_model = GenreORM.objects.filter(id=id)
+            genre_model = GenreORM.objects.get(id=id)
+            print(genre_model, '<-------')
             return Genre(
                 id=genre_model.id, # type: ignore
                 name=genre_model.name,
