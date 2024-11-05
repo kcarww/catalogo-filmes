@@ -1,0 +1,27 @@
+GET http://localhost:8000/api/genres/
+
+
+###
+
+GET http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4
+
+###
+
+POST http://localhost:8000/api/categories/
+Content-Type: application/json
+
+{
+  "name": "Category 2",
+  "description": "Category 2 description"
+}
+
+###
+
+PUT http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4/
+Content-Type: application/json
+
+{
+  "name": "-----> edited <---",
+  "description": "----> Category 2 description",
+  "is_active": true
+}
