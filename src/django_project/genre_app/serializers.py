@@ -26,3 +26,6 @@ class CreateGenreInputSerializer(serializers.Serializer):
     
 class CreateGenreOutputSerializer(serializers.Serializer):
     id = serializers.UUIDField()
+    
+class DeleteGenreInputSerializer(serializers.Serializer):
+    id = serializers.UUIDField()

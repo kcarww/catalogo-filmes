@@ -139,3 +139,39 @@ class TestCreateAPI:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
         assert "Categories with provided IDs not found" in response.data["error"] # type: ignore
+        
+        
+    
+    
+@pytest.mark.django_db
+class TestDeleteAPI:
+    def test_when_genre_pk_is_invalid_then_return_400(self) -> None:
+        url = "/api/genres/invalid_uuid/"
+        response = APIClient().delete(url)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
+        assert response.data == {"id": ["Must be a valid UUID."]} # type: ignore
+
+    def test_when_genre_not_found_then_return_404(self) -> None:
+        url = f"/api/genres/{str(uuid.uuid4())}/"
+        response = APIClient().delete(url)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND # type: ignore
+
+    def test_when_genre_found_then_delete_genre(
+        self,
+        category_repository: DjangoORMCategoryRepository,
+        category_movie: Category,
+        category_documentary: Category,
+        genre_repository: DjangoORMGenreRepository,
+        genre_romance: Genre,
+    ) -> None:
+        category_repository.save(category_movie)
+        category_repository.save(category_documentary)
+        genre_repository.save(genre_romance)
+
+        url = f"/api/genres/{str(genre_romance.id)}/"
+        response = APIClient().delete(url)
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT # type: ignore
+        assert genre_repository.get_by_id(genre_romance.id) is None
