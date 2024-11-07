@@ -8,9 +8,11 @@ from core.genre.application.exceptions import GenreNotFound, InvalidGenre, Relat
 from core.genre.application.use_cases.create_genre import CreateGenre
 from core.genre.application.use_cases.delete_genre import DeleteGenre
 from core.genre.application.use_cases.list_genre import ListGenre
+from core.genre.application.use_cases.update_genre import UpdateGenre
 from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.genre_app.repository import DjangoORMGenreRepository
-from django_project.genre_app.serializers import CreateGenreInputSerializer, CreateGenreOutputSerializer, DeleteGenreInputSerializer, ListGenreOutputSerializer
+from django_project.genre_app.serializers import CreateGenreInputSerializer, CreateGenreOutputSerializer, DeleteGenreInputSerializer, ListGenreOutputSerializer, UpdateGenreInputSerializer
+
 
 class GenreViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
@@ -21,16 +23,17 @@ class GenreViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK,
             data=response_serializer.data
         )
-        
+
     def create(self, request: Request) -> Response:
         serializer = CreateGenreInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         use_case = CreateGenre(
             repository=DjangoORMGenreRepository(),
             category_repository=DjangoORMCategoryRepository())
-        
+
         try:
-            output = use_case.execute(CreateGenre.Input(**serializer.validated_data)) # type: ignore
+            output = use_case.execute(CreateGenre.Input(
+                **serializer.validated_data))  # type: ignore
         except (
             InvalidGenre,
             RelatedCategoriesNotFound
@@ -39,19 +42,20 @@ class GenreViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": str(error)}
             )
-        
+
         return Response(
             status=status.HTTP_201_CREATED,
             data=CreateGenreOutputSerializer(output).data
         )
-        
-    def destroy(self, request: Request, pk: UUID = None) -> Response: # type: ignore
+
+    def destroy(self, request: Request, pk: UUID = None) -> Response:  # type: ignore
         request_data = DeleteGenreInputSerializer(data={"id": pk})
         request_data.is_valid(raise_exception=True)
-        
-        input = DeleteGenre.Input(**request_data.validated_data) # type: ignore
+
+        input = DeleteGenre.Input(
+            **request_data.validated_data)  # type: ignore
         use_case = DeleteGenre(repository=DjangoORMGenreRepository())
-        
+
         try:
             use_case.execute(input)
         except GenreNotFound as error:
@@ -59,7 +63,34 @@ class GenreViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND,
                 data={"error": str(error)}
             )
-        
+
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
-    
+
+    def update(self, request: Request, pk: UUID = None) -> Response:
+        request_data = UpdateGenreInputSerializer(
+            data={
+                **request.data,  # type: ignore
+                "id": pk
+            }
+        )
+        request_data.is_valid(raise_exception=True)
+        genre_input = UpdateGenre.Input(
+            **request_data.validated_data)  # type: ignore
+        try:
+            use_case = UpdateGenre(
+                repository=DjangoORMGenreRepository(),
+                category_repository=DjangoORMCategoryRepository())
+            use_case.execute(genre_input)
+        except GenreNotFound as error:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                data={"error": str(error)}
+            )
+        except (InvalidGenre, RelatedCategoriesNotFound) as error:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": str(error)},
+            )
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )

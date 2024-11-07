@@ -175,3 +175,80 @@ class TestDeleteAPI:
 
         assert response.status_code == status.HTTP_204_NO_CONTENT # type: ignore
         assert genre_repository.get_by_id(genre_romance.id) is None
+        
+@pytest.mark.django_db
+class TestUpdateAPI:
+    def test_when_request_data_is_valid_then_update_genre(
+        self,
+        category_repository: DjangoORMCategoryRepository,
+        category_movie: Category,
+        category_documentary: Category,
+        genre_repository: DjangoORMGenreRepository,
+        genre_romance: Genre,
+    ) -> None:
+        category_repository.save(category_movie)
+        category_repository.save(category_documentary)
+        genre_repository.save(genre_romance)
+
+        url = f"/api/genres/{str(genre_romance.id)}/"
+        data = {
+            "name": "Drama",
+            "is_active": True,
+            "categories": [category_documentary.id],
+        }
+        response = APIClient().put(url, data=data, format='json')
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT # type: ignore
+        updated_genre = genre_repository.get_by_id(genre_romance.id)
+        assert updated_genre.name == "Drama" # type: ignore
+        assert updated_genre.is_active is True # type: ignore
+        assert updated_genre.categories == {category_documentary.id} # type: ignore
+
+    def test_when_request_data_is_invalid_then_return_400(
+        self,
+        genre_drama: Genre,
+    ) -> None:
+        url = f"/api/genres/{str(genre_drama.id)}/"
+        data = {
+            "name": "",
+            "is_active": True,
+            "categories": [],
+        }
+        response = APIClient().put(url, data=data, format='json')
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
+        assert response.data == {"name": ["This field may not be blank."]} # type: ignore
+
+    def test_when_related_categories_do_not_exist_then_return_400(
+        self,
+        category_repository: DjangoORMCategoryRepository,
+        category_movie: Category,
+        category_documentary: Category,
+        genre_repository: DjangoORMGenreRepository,
+        genre_romance: Genre,
+    ) -> None:
+        category_repository.save(category_movie)
+        category_repository.save(category_documentary)
+        genre_repository.save(genre_romance)
+
+        url = f"/api/genres/{str(genre_romance.id)}/"
+        data = {
+            "name": "Romance",
+            "is_active": True,
+            "categories": [uuid.uuid4()],  # non-existent category
+        }
+        response = APIClient().put(url, data=data, format='json')
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
+        # assert "Categories with provided IDs not found" in response.data["error"] # type: ignore
+
+    def test_when_genre_does_not_exist_then_return_404(self) -> None:
+        url = f"/api/genres/{str(uuid.uuid4())}/"
+        data = {
+            "name": "Romance",
+            "is_active": True,
+            "categories": [],
+        }
+        response = APIClient().put(url, data=data, format='json')
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND # type: ignore
