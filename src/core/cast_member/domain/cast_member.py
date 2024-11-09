@@ -38,7 +38,7 @@ class CastMember:
             return False
         return self.id == other.id
     
-    def update_cast_member(self, name, type):
+    def update_cast_member(self, name: str, type: CastMemberType):
         self.name = name
         self.type = type
         self.validate()
