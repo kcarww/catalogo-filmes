@@ -6,15 +6,15 @@ from core.cast_member.domain.cast_member_repository import CastMemberRepository
 
 
 @dataclass
-class DeleteCastMemberInput:
+class DeleteCastMemberRequest:
     id: UUID
     
 class DeleteCastMember:
     def __init__(self, repository: CastMemberRepository):
         self.repository = repository
         
-    def execute(self, request: DeleteCastMemberInput):
-        cast_member = self.repository.get_by_id(input.id)
+    def execute(self, request: DeleteCastMemberRequest):
+        cast_member = self.repository.get_by_id(request.id)
 
         if cast_member is None:
             raise CastMemberNotFound(f"CastMember with {request.id} not found")
