@@ -1,3 +1,4 @@
+from uuid import UUID, uuid4
 import pytest
 from django.test import override_settings
 from django.urls import reverse
@@ -94,3 +95,48 @@ class TestCreateAPI:
         response = APIClient().post(url, data=data)
         
         assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
+        
+@pytest.mark.django_db
+class TestUpdateAPI:
+    def test_update_with_valid_data(
+        self,
+        actor: CastMember,
+        cast_member_repository: CastMemberRepository
+    ):
+        actor_id = cast_member_repository.save(actor)
+        url = f"/api/cast-members/{actor.id}/"
+        data = {
+            "name": "Tarantino Updated",
+            "type": "DIRECTOR"
+        }
+        
+        response = APIClient().put(url, data=data, format="json")
+        
+        assert response.status_code == status.HTTP_204_NO_CONTENT # type: ignore
+        updated_actor = cast_member_repository.get_by_id(actor.id)
+        assert updated_actor.name == "Tarantino Updated" # type: ignore
+        assert updated_actor.type == CastMemberType.DIRECTOR # type: ignore
+        
+    def test_when_request_data_is_invalid_then_return_400(self):
+        url = "/api/cast-members/1/"
+        data = {
+            "name": "",
+            "type": ""
+        }
+        
+        response = APIClient().put(url, data=data, format="json")
+        
+        assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
+        
+    def test_when_cast_member_with_id_does_not_exist_then_return_404(
+        self,
+    ) -> None:
+        url = f"/api/cast-members/{uuid4()}/"
+        data = {
+            "name": "Tarantino",
+            "type": "ACTOR"
+        }
+        
+        response = APIClient().put(url, data=data, format="json")
+        
+        assert response.status_code == status.HTTP_404_NOT_FOUND # type: ignore

@@ -1,3 +1,4 @@
+from uuid import UUID
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.request import Request
@@ -11,9 +12,11 @@ from rest_framework.status import (
 )
 
 from core.cast_member.application.use_cases.create_cast_member import CreateCastMember, CreateCastMemberRequest, CreateCastMemberResponse
+from core.cast_member.application.use_cases.exceptions import CastMemberNotFound, InvalidCastMember
 from core.cast_member.application.use_cases.list_cast_member_use_case import ListCastMemberOutput, ListCastMemberRequest, ListCastMemberUseCase
+from core.cast_member.application.use_cases.update_cast_member_use_case import UpdateCastMember, UpdateCastMemberRequest
 from django_project.cast_member_app.repository import DjangoORMCastMemberRepository
-from django_project.cast_member_app.serializers import CreateCastMemberRequestSerializer, CreateCastMemberResponseSerializer, ListCastMembersResponseSerializer
+from django_project.cast_member_app.serializers import CreateCastMemberRequestSerializer, CreateCastMemberResponseSerializer, ListCastMembersResponseSerializer, UpdateCastMemberRequestSerializer
 
 class CastMemberViewSet(viewsets.ViewSet):
     def create(self, request: Request) -> Response:
@@ -41,8 +44,29 @@ class CastMemberViewSet(viewsets.ViewSet):
     def retrieve(self, request: Request, pk: str) -> Response:
         pass
     
-    def update(self, request: Request, pk: str) -> Response:
-        pass
+    def update(self, request: Request, pk: UUID) -> Response:
+        serializer = UpdateCastMemberRequestSerializer(
+            data={
+                "id": pk,
+                **request.data # type: ignore
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        
+        input = UpdateCastMemberRequest(**serializer.validated_data) # type: ignore
+        use_case = UpdateCastMember(repository=DjangoORMCastMemberRepository())
+        try:
+            use_case.execute(input)
+        except CastMemberNotFound as e:
+            return Response(
+                status=HTTP_404_NOT_FOUND
+            )
+        except InvalidCastMember as e:
+            return Response(
+                status=HTTP_400_BAD_REQUEST,
+                data={"error": str(e)}
+            )
+        return Response(status=HTTP_204_NO_CONTENT)
     
     def destroy(self, request: Request, pk: str) -> Response:
         pass

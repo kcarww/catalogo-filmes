@@ -17,14 +17,10 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8000/api/genres/0a4be2e6-eb74-4cd9-9fb7-fb77c7980f9a/
+PUT http://localhost:8000/api/cast-members/b1ab26b9-3e93-4ea8-b39c-14e6cdf6af59/
 Content-Type: application/json
 
 {
-  "name": "Ficção cientifica",
-  "categories": [
-    "7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4",
-    "a92a8826-9f73-43a9-8f7e-8ad41f91a4c8"
-  ],
-  "is_active": true
+  "name": "Quentin Tarantino",
+  "type": "DIRECTOR"
 }
