@@ -62,3 +62,35 @@ class TestListAPI:
 
         assert response.status_code == status.HTTP_200_OK # type: ignore
         assert response.data == expected_data # type: ignore
+        
+        
+@pytest.mark.django_db
+class TestCreateAPI:
+    def test_create_with_valid_data(
+        self,
+        cast_member_repository: CastMemberRepository
+    ):
+        url = "/api/cast-members/"
+        data = {
+            "name": "Tarantino",
+            "type": "ACTOR"
+        }
+        
+        response = APIClient().post(url, data=data)
+        
+        assert response.status_code == status.HTTP_201_CREATED # type: ignore
+        assert isinstance(response.data["id"], str) # type: ignore
+        
+        saved_cast_member = cast_member_repository.get_by_id(response.data["id"]) # type: ignore
+        assert saved_cast_member.name == "Tarantino" # type: ignore
+        
+    def test_when_request_data_with_invalid_data_then_return_400(self):
+        url = "/api/cast-members/"
+        data = {
+            "name": "",
+            "type": ""
+        }
+        
+        response = APIClient().post(url, data=data)
+        
+        assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore

@@ -7,14 +7,12 @@ GET http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4
 
 ###
 
-POST http://localhost:8000/api/genres/
+POST http://localhost:8000/api/cast-members/
 Content-Type: application/json
 
 {
-  "name": "Drama",
-  "categories": [
-    "7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4"
-  ]
+  "name": "Tarantino",
+  "type": "DIRECTOR"
 }
 
 ###

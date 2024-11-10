@@ -10,14 +10,26 @@ from rest_framework.status import (
     HTTP_201_CREATED,
 )
 
+from core.cast_member.application.use_cases.create_cast_member import CreateCastMember, CreateCastMemberRequest, CreateCastMemberResponse
 from core.cast_member.application.use_cases.list_cast_member_use_case import ListCastMemberOutput, ListCastMemberRequest, ListCastMemberUseCase
 from django_project.cast_member_app.repository import DjangoORMCastMemberRepository
-from django_project.cast_member_app.serializers import ListCastMembersResponseSerializer
+from django_project.cast_member_app.serializers import CreateCastMemberRequestSerializer, CreateCastMemberResponseSerializer, ListCastMembersResponseSerializer
 
 class CastMemberViewSet(viewsets.ViewSet):
     def create(self, request: Request) -> Response:
-        pass
-    
+        serializer = CreateCastMemberRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        cast_member_input = CreateCastMemberRequest(**serializer.validated_data) # type: ignore
+        use_case = CreateCastMember(repository=DjangoORMCastMemberRepository())
+        cast_member_output = use_case.execute(cast_member_input)
+        
+        return Response(
+            status=HTTP_201_CREATED,
+            data=CreateCastMemberResponseSerializer(instance=cast_member_output).data
+        )
+        
+        
     def list(self, request: Request) -> Response:
         use_case = ListCastMemberUseCase(repository=DjangoORMCastMemberRepository())
         output: ListCastMemberOutput = use_case.execute(ListCastMemberRequest())
