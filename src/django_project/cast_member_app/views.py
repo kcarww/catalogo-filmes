@@ -18,7 +18,7 @@ from core.cast_member.application.use_cases.exceptions import CastMemberNotFound
 from core.cast_member.application.use_cases.list_cast_member_use_case import ListCastMemberOutput, ListCastMemberRequest, ListCastMemberUseCase
 from core.cast_member.application.use_cases.update_cast_member_use_case import UpdateCastMember, UpdateCastMemberRequest
 from django_project.cast_member_app.repository import DjangoORMCastMemberRepository
-from django_project.cast_member_app.serializers import CreateCastMemberRequestSerializer, CreateCastMemberResponseSerializer, DeleteCastMemberRequestSerializer, ListCastMembersResponseSerializer, UpdateCastMemberRequestSerializer
+from django_project.cast_member_app.serializers import CreateCastMemberRequestSerializer, CreateCastMemberResponseSerializer, DeleteCastMemberRequestSerializer, ListCastMembersResponseSerializer, RetrieveCastMemberRequestSerializer, UpdateCastMemberRequestSerializer
 
 class CastMemberViewSet(viewsets.ViewSet):
     def create(self, request: Request) -> Response:
@@ -44,7 +44,11 @@ class CastMemberViewSet(viewsets.ViewSet):
             data=response_serializer.data
         )
     def retrieve(self, request: Request, pk: str) -> Response:
-        pass
+        serializer = RetrieveCastMemberRequestSerializer(data={"id": pk})
+        serializer.is_valid(raise_exception=True)
+        
+        # TODO - TERMINAR O GET CAST MEMBER
+        return Response()
     
     def update(self, request: Request, pk: UUID) -> Response:
         serializer = UpdateCastMemberRequestSerializer(

@@ -3,7 +3,7 @@ GET http://localhost:8000/api/cast-members/
 
 ###
 
-GET http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4
+GET http://localhost:8000/api/cast-members/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4
 
 ###
 

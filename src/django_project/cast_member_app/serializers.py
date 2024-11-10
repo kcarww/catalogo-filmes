@@ -35,3 +35,9 @@ class UpdateCastMemberRequestSerializer(serializers.Serializer):
     
 class DeleteCastMemberRequestSerializer(serializers.Serializer):
     id = serializers.UUIDField()
+    
+class RetrieveCastMemberResponseSerializer(serializers.Serializer):
+    data = CastMemberResponseSerializer(source='*') # type: ignore
+    
+class RetrieveCastMemberRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()

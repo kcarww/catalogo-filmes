@@ -2,6 +2,8 @@ import uuid
 from uuid import UUID
 from dataclasses import dataclass, field
 
+from core._shared.domain.notification import Notification
+
 
 @dataclass
 class Category:
@@ -9,16 +11,22 @@ class Category:
     description: str = ""
     is_active: bool = True
     id: UUID = field(default_factory=uuid.uuid4)
+    notification: Notification = field(default_factory=Notification)
 
     def __post_init__(self):
         self.validate()
 
     def validate(self):
         if len(self.name) > 255:
-            raise ValueError("name must have less than 256 characters")
+            # raise ValueError("name must have less than 256 characters")
+            self.notification.add_error("name must have less than 256 characters")
 
         if not self.name:
-            raise ValueError("name is required")
+            # raise ValueError("name is required")
+            self.notification.add_error("name is required")
+            
+        if self.notification.has_errors:
+            raise ValueError(self.notification.messages)
 
     def __repr__(self):
         return f"{self.name} - {self.description} - {self.is_active}"
