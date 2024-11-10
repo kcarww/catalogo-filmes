@@ -24,3 +24,7 @@ Content-Type: application/json
   "name": "Quentin Tarantino",
   "type": "DIRECTOR"
 }
+
+###
+
+DELETE http://localhost:8000/api/cast-members/b1ab26b9-3e93-4ea8-b39c-14e6cdf6af59/

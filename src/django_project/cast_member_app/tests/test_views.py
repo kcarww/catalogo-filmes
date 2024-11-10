@@ -140,3 +140,28 @@ class TestUpdateAPI:
         response = APIClient().put(url, data=data, format="json")
         
         assert response.status_code == status.HTTP_404_NOT_FOUND # type: ignore
+        
+@pytest.mark.django_db
+class TestDeleteAPI:
+    def test_when_cast_member_pk_is_invalid_then_return_400(self) -> None:
+        url = "/api/cast-members/invalid_pk/"
+        
+        response = APIClient().delete(url)
+        
+        assert response.status_code == status.HTTP_400_BAD_REQUEST # type: ignore
+        
+    def test_when_cast_member_does_not_exist_then_return_404(self) -> None:
+        url = f"/api/cast-members/{uuid4()}/"
+        
+        response = APIClient().delete(url)
+        
+        assert response.status_code == status.HTTP_404_NOT_FOUND # type: ignore
+        
+    def test_when_cast_member_exists_then_return_204(self, actor: CastMember) -> None:
+        DjangoORMCastMemberRepository().save(actor)
+        url = f"/api/cast-members/{actor.id}/"
+        
+        response = APIClient().delete(url)
+        
+        assert response.status_code == status.HTTP_204_NO_CONTENT # type: ignore
+        assert DjangoORMCastMemberRepository().get_by_id(actor.id) is None
