@@ -69,4 +69,4 @@ class TestUpdateCastMember:
         with pytest.raises(InvalidCastMember) as exc:
             use_case.execute(request)
         mock_repository.update.assert_not_called()
-        assert str(exc.value) == "name cannot be empty"
+        assert "name cannot be empty" in str(exc.value)

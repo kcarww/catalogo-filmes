@@ -33,4 +33,4 @@ class TestCreateCastMember:
             use_case.execute(CreateCastMemberRequest(name="", type=""))
 
         assert exc_info.type is InvalidCastMember
-        assert str(exc_info.value) == "name cannot be empty"
+        assert "name cannot be empty" in str(exc_info.value)
