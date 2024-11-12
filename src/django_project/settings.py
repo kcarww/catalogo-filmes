@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -83,6 +84,22 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'catalogo_admin',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3307',
+    },
+    'OPTIONS': {
+            'init_command': "SET SESSION sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
+}
+
 
 
 # Password validation
