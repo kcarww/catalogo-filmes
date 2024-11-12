@@ -6,24 +6,19 @@ from django_project.genre_app.models import Genre as GenreORM
 
 class DjangoORMGenreRepository(GenreRepository):
     def save(self, genre: Genre):
-        with transaction.atomic():   
+        with transaction.atomic():
             genre_model = GenreORM.objects.create(
                 id=genre.id,
                 name=genre.name,
-                is_active=genre.is_active
+                is_active=genre.is_active,
             )
             genre_model.categories.set(genre.categories)
+            
             
     def get_by_id(self, id: UUID) -> Genre | None:
         try:
             genre_model = GenreORM.objects.get(id=id)
-            print(genre_model, '<-------')
-            return Genre(
-                id=genre_model.id, # type: ignore
-                name=genre_model.name,
-                is_active=genre_model.is_active, # type: ignore
-                categories=set(genre_model.categories.values_list("id", flat=True)) # type: ignore
-            )
+            return GenreMapper.to_entity(genre_model)
         except GenreORM.DoesNotExist:
             return None
     def delete(self, id: UUID) -> None:
@@ -31,12 +26,8 @@ class DjangoORMGenreRepository(GenreRepository):
     
     def list(self) -> list[Genre]:
         return [
-            Genre(
-                id=genre_model.id,
-                name=genre_model.name,
-                is_active=genre_model.is_active,
-                categories=set(genre_model.categories.values_list("id", flat=True)),
-            ) for genre_model in GenreORM.objects.all()
+            GenreMapper.to_entity(genre_model)
+            for genre_model in GenreORM.objects.all()
         ]
     
     def update(self, genre: Genre) -> None:
@@ -51,3 +42,24 @@ class DjangoORMGenreRepository(GenreRepository):
                     is_active=genre.is_active,
                 )
                 genre_model.categories.set(genre.categories)
+                
+                
+class GenreMapper:
+    @staticmethod
+    def to_entity(genre: GenreORM) -> Genre:
+        return Genre(
+            id=genre.id,
+            name=genre.name,
+            is_active=genre.is_active,
+            categories=set(genre.categories.values_list("id", flat=True)),
+        )
+    
+    @staticmethod
+    def to_model(genre: Genre) -> GenreORM:
+        return GenreORM(
+            id=genre.id,
+            name=genre.name,
+            is_active=genre.is_active,
+        )
+    
+        
