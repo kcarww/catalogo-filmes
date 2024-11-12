@@ -3,7 +3,7 @@ GET http://localhost:8000/api/categories
 
 ###
 
-GET http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4
+GET http://localhost:8000/api/categories/a78028b2-2b8b-468f-a06e-db717bf40d67
 
 ###
 
@@ -11,17 +11,17 @@ POST http://localhost:8000/api/categories/
 Content-Type: application/json
 
 {
-  "name": "Category 2",
-  "description": "Category 2 description"
+  "name": "Movie",
+  "description": "Movie description"
 }
 
 ###
 
-PUT http://localhost:8000/api/categories/7ca15e5a-d5ab-45e8-a61e-a3e68cf39ba4/
+PUT http://localhost:8000/api/categories/a78028b2-2b8b-468f-a06e-db717bf40d67/
 Content-Type: application/json
 
 {
-  "name": "-----> edited <---",
-  "description": "----> Category 2 description",
+  "name": "Movie",
+  "description": "Category 2 description",
   "is_active": true
 }
