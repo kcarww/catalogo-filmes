@@ -19,7 +19,8 @@ from django_project.category_app.serializers import  CreateCategoryRequestSerial
 class CategoryViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
         order_by = request.query_params.get("order_by", "name")
-        input = ListCategoryRequest(order_by=order_by)
+        current_page = request.query_params.get("current_page", 1)
+        input = ListCategoryRequest(order_by=order_by, current_page=int(current_page))
         use_case = ListCategory(repository=DjangoORMCategoryRepository())
         output = use_case.execute(input)
 

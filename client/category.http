@@ -1,4 +1,4 @@
-GET http://localhost:8000/api/categories?order_by=description
+GET http://localhost:8000/api/categories?order_by=name&current_page=2
 
 
 ###

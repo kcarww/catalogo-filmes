@@ -7,15 +7,20 @@ class CategoryResponseSerializer(serializers.Serializer):
     is_active = serializers.BooleanField()
     
 
-class ListCategoryResponseSerializer(serializers.Serializer):
-    data = CategoryResponseSerializer(many=True)
+class ListOutputMetaSerializer(serializers.Serializer):
+    current_page = serializers.IntegerField()
+    per_page = serializers.IntegerField()
+    total = serializers.IntegerField()
 
+class ListCategoryResponseSerializer(serializers.Serializer):
+    data = CategoryResponseSerializer(many=True) # type: ignore
+    meta = ListOutputMetaSerializer()
 
 class RetrieveCategoryRequestSerializer(serializers.Serializer):
     id = serializers.UUIDField()
 
 class RetrieveCategoryResponseSerializer(serializers.Serializer):
-    data = CategoryResponseSerializer(source='*')
+    data = CategoryResponseSerializer(source='*') # type: ignore
     
     
 class CreateCategoryResponseSerializer(serializers.Serializer):
