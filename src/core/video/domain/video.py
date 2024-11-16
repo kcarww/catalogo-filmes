@@ -3,6 +3,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from core._shared.domain.entity import Entity
+from core.video.domain.value_objects import AudioVideoMedia, ImageMedia, MediaStatus, Rating
 
 @dataclass
 class Video(Entity):
@@ -15,7 +16,13 @@ class Video(Entity):
     
     categories: set[UUID]
     genres: set[UUID]
-    cast_member: set[UUID]
+    cast_members: set[UUID]
+    
+    banner: ImageMedia | None = None
+    thumbnail: ImageMedia | None = None
+    thumbnail_half: ImageMedia | None = None
+    trailer: AudioVideoMedia | None = None
+    video: AudioVideoMedia | None = None
     
     # TODO: adicionar atributos de media
     
@@ -28,3 +35,53 @@ class Video(Entity):
             
         if self.notification.has_errors:
             raise ValueError(self.notification.messages)
+        
+    def update(
+        self,
+        title: str,
+        description: str,
+        launch_year: int,
+        duration: Decimal,
+        rating: Rating,
+        categories: set[UUID],
+        genres: set[UUID],
+        cast_members: set[UUID],
+    ) -> None:
+        self.title = title
+        self.description = description
+        self.launch_year = launch_year
+        self.duration = duration
+        self.rating = rating
+        self.categories = categories
+        self.genres = genres
+        self.cast_members = cast_members
+        self.validate()
+        
+    def publish(self) -> None:
+        if not self.video:
+            self.notification.add_error("Video media is required to publish the video")
+        elif self.video.status != MediaStatus.COMPLETED:
+            self.notification.add_error("Video must be fully processed to be published")
+
+        self.published = True
+        self.validate()
+        
+    def update_banner(self, banner: ImageMedia) -> None:
+        self.banner = banner
+        self.validate()
+
+    def update_thumbnail(self, thumbnail: ImageMedia) -> None:
+        self.thumbnail = thumbnail
+        self.validate()
+
+    def update_thumbnail_half(self, thumbnail_half: ImageMedia) -> None:
+        self.thumbnail_half = thumbnail_half
+        self.validate()
+
+    def update_video_media(self, video: AudioVideoMedia) -> None:
+        self.video = video
+        self.validate()
+
+    def update_trailer(self, trailer: AudioVideoMedia) -> None:
+        self.trailer = trailer
+        self.validate()
