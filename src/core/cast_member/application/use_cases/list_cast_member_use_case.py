@@ -35,5 +35,3 @@ class ListCastMemberUseCase:
             for cast_member in cast_members
             ]
         )
-            
-        
