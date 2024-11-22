@@ -42,19 +42,16 @@ class Video(Entity):
         description: str,
         launch_year: int,
         duration: Decimal,
+        published: bool,
         rating: Rating,
-        categories: set[UUID],
-        genres: set[UUID],
-        cast_members: set[UUID],
     ) -> None:
         self.title = title
         self.description = description
         self.launch_year = launch_year
         self.duration = duration
         self.rating = rating
-        self.categories = categories
-        self.genres = genres
-        self.cast_members = cast_members
+        self.published = published
+        
         self.validate()
         
     def publish(self) -> None:
@@ -65,6 +62,15 @@ class Video(Entity):
 
         self.published = True
         self.validate()
+        
+    def add_category(self, category_id: UUID) -> None:
+        self.categories.add(category_id)
+        
+    def add_genre(self, genre_id: UUID) -> None:
+        self.genres.add(genre_id)
+        
+    def add_cast_member(self, cast_member_id: UUID) -> None:
+        self.cast_members.add(cast_member_id)
         
     def update_banner(self, banner: ImageMedia) -> None:
         self.banner = banner
