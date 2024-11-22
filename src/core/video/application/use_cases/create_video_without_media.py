@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Set
 from uuid import UUID
 
 from core._shared.domain.notification import Notification
@@ -12,6 +11,7 @@ from core.video.domain.value_objects import Rating
 from core.video.domain.video import Video
 from core.video.domain.video_repository import VideoRepository
 class CreateVideoWithoutMedia:
+
     @dataclass
     class Input:
         title: str
@@ -22,63 +22,63 @@ class CreateVideoWithoutMedia:
         categories: set[UUID]
         genres: set[UUID]
         cast_members: set[UUID]
-        
+
     @dataclass
     class Output:
         id: UUID
-        
+
     def __init__(
         self,
         video_repository: VideoRepository,
         category_repository: CategoryRepository,
-        genre_repository: GenreRepository,
         cast_member_repository: CastMemberRepository,
-    ):
-        self._video_repository = video_repository
-        self._category_repository = category_repository
-        self._genre_repository = genre_repository
-        self._cast_member_repository = cast_member_repository
-        
-    def execute(self, request: Input) -> Output:
+        genre_repository: GenreRepository,
+    ) -> None:
+        self.video_repository = video_repository
+        self.category_repository = category_repository
+        self.genre_repository = genre_repository
+        self.cast_member_repository = cast_member_repository
+
+    def execute(self, input: Input) -> Output:
         notification = Notification()
-        notification.add_error(self.validate_categories(request.categories)) # type: ignore
-        notification.add_error(self.validate_genres(request.genres)) # type: ignore
-        notification.add_error(self.validate_cast_members(request.cast_members)) # type: ignore
+
+        self.validate_cast_members(input, notification)
+        self.validate_categories(input, notification)
+        self.validate_genres(input, notification)
 
         if notification.has_errors:
             raise RelatedEntitiesNotFound(notification.messages)
 
         try:
             video = Video(
-                title=request.title,
-                description=request.description,
-                launch_year=request.launch_year,
-                duration=request.duration,
-                rating=request.rating,
-                categories=request.categories,
-                genres=request.genres,
-                cast_members=request.cast_members,
-                published=False
+                title=input.title,
+                description=input.description,
+                launch_year=input.launch_year,
+                duration=input.duration,
+                published=False,
+                rating=input.rating,
+                categories=input.categories,
+                genres=input.genres,
+                cast_members=input.cast_members
             )
         except ValueError as err:
             raise InvalidVideo(err)
 
-        self._video_repository.save(video)
+        self.video_repository.save(video)
 
         return self.Output(id=video.id)
-        
-        
-    def validate_categories(self, category_ids: set[UUID]) -> list[str]: # type: ignore
-        existing_category_ids = {category.id for category in self._category_repository.list()}
-        if not category_ids.issubset(existing_category_ids):
-            return ["Invalid categories"]
 
-    def validate_genres(self, genre_ids: set[UUID]) -> list[str]: # type: ignore
-        existing_genre_ids = {genre.id for genre in self._genre_repository.list()}
-        if not genre_ids.issubset(existing_genre_ids):
-            return ["Invalid genres"]
+    def validate_categories(self, input: Input, notification: Notification) -> None:
+        category_ids = {category.id for category in self.category_repository.list()}
+        if not input.categories.issubset(category_ids):
+            notification.add_error("Categories with provided IDs not found")
 
-    def validate_cast_members(self, cast_member_ids: set[UUID]) -> list[str]: # type: ignore
-        existing_cast_member_ids = {cast_member.id for cast_member in self._cast_member_repository.list()}
-        if not cast_member_ids.issubset(existing_cast_member_ids):
-            return ["Invalid cast members"]
+    def validate_cast_members(self, input: Input, notification: Notification) -> None:
+        cast_member_ids = {cast_member.id for cast_member in self.cast_member_repository.list()}
+        if not input.cast_members.issubset(cast_member_ids):
+            notification.add_error("Cast Members with provided IDs not found")
+
+    def validate_genres(self, input: Input, notification: Notification) -> None:
+        genre_ids = {genre.id for genre in self.genre_repository.list()}
+        if not input.genres.issubset(genre_ids):
+            notification.add_error("Genres with provided IDs not found")
