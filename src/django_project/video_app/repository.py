@@ -9,6 +9,7 @@ from django_project.video_app.models import Video as VideoModel, AudioVideoMedia
 
 class DjangoORMVideoRepository(VideoRepository):
     def save(self, video: Video) -> None:
+        
         with transaction.atomic():
             video_model = VideoModel(
                 title=video.title,
@@ -22,6 +23,7 @@ class DjangoORMVideoRepository(VideoRepository):
             video_model.categories.set(video.categories)
             video_model.genres.set(video.genres)
             video_model.cast_members.set(video.cast_members)
+            video_model.save()
             
     
     def get_by_id(self, id: UUID) -> Video:

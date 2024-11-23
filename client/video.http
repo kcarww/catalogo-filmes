@@ -1,0 +1,20 @@
+POST http://localhost:8000/api/videos/
+Content-Type: application/json
+
+{
+    "title": "Video 1",
+    "description": "Description 1",
+    "launch_year": 2020,
+    "published": true,
+    "rating": "ER",
+    "duration": 1,
+    "categories": [
+        "91975f9a-f4a0-4c7d-b23f-cd10e3fd501c"
+    ],
+    "genres": [
+        "c65d76ae-bd86-4861-9554-8deedf2fbb65"
+    ],
+    "cast_members": [
+        "1117d3af-a01e-4d7f-b95a-af4cf8afb0cb"
+    ]
+}
