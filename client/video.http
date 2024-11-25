@@ -2,7 +2,7 @@ POST http://localhost:8000/api/videos/
 Content-Type: application/json
 
 {
-    "title": "Video 1",
+    "title": "Fight Club",
     "description": "Description 1",
     "launch_year": 2020,
     "published": true,

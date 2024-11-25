@@ -34,3 +34,17 @@ class CreateVideoRequestSerializer(serializers.Serializer):
     
 class CreateVideoResponseSerializer(serializers.Serializer):
     id = serializers.UUIDField()
+    
+class VideoResponseSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    title = serializers.CharField()
+    description = serializers.CharField()
+    launch_year = serializers.IntegerField()
+    rating = VideoRatingField()
+    duration = serializers.IntegerField()
+    categories = SetField(child=serializers.UUIDField())
+    genres = SetField(child=serializers.UUIDField())
+    cast_members = SetField(child=serializers.UUIDField())
+    
+class ListVideoResponseSerializer(serializers.Serializer):
+    data = VideoResponseSerializer(many=True) # type: ignore
