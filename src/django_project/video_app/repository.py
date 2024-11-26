@@ -30,7 +30,7 @@ class DjangoORMVideoRepository(VideoRepository):
         try:
             model = VideoModel.objects.get(id=id)
         except VideoModel.DoesNotExist:
-            return None
+            return None # type: ignore
         else:
             return VideoModelMapper.to_entity(model)
         

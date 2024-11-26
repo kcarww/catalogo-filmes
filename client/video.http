@@ -1,8 +1,9 @@
+# @name create_video
 POST http://localhost:8000/api/videos/
 Content-Type: application/json
 
 {
-    "title": "Fight Club",
+    "title": "Interestellas",
     "description": "Description 1",
     "launch_year": 2020,
     "published": true,
@@ -18,3 +19,8 @@ Content-Type: application/json
         "1117d3af-a01e-4d7f-b95a-af4cf8afb0cb"
     ]
 }
+
+###
+
+# @name list_videos
+GET http://localhost:8000/api/videos/

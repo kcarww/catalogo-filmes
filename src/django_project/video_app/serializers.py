@@ -46,5 +46,10 @@ class VideoResponseSerializer(serializers.Serializer):
     genres = SetField(child=serializers.UUIDField())
     cast_members = SetField(child=serializers.UUIDField())
     
+class ListVideoOutputMetaSerializer(serializers.Serializer):
+    current_page = serializers.IntegerField()
+    per_page = serializers.IntegerField()
+    total = serializers.IntegerField()
 class ListVideoResponseSerializer(serializers.Serializer):
     data = VideoResponseSerializer(many=True) # type: ignore
+    meta = ListVideoOutputMetaSerializer()

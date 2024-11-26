@@ -9,15 +9,26 @@ from rest_framework.status import (
 )
 
 from core.video.application.use_cases.create_video_without_media import CreateVideoWithoutMedia
+from core.video.application.use_cases.list_video_use_case import ListVideo, ListVideoRequest
 from django_project.cast_member_app.repository import DjangoORMCastMemberRepository
 from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.genre_app.repository import DjangoORMGenreRepository
 from django_project.video_app.repository import DjangoORMVideoRepository
-from django_project.video_app.serializers import CreateVideoRequestSerializer, CreateVideoResponseSerializer
+from django_project.video_app.serializers import CreateVideoRequestSerializer, CreateVideoResponseSerializer, ListVideoResponseSerializer
 
 class VideoViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
-        raise NotImplementedError
+        order_by = request.query_params.get("order_by", "title")
+        current_page = request.query_params.get("current_page", 1)
+        input = ListVideoRequest(order_by=order_by, current_page=int(current_page))
+        use_case = ListVideo(repository=DjangoORMVideoRepository())
+        output = use_case.execute(input)
+        
+        serializer = ListVideoResponseSerializer(output)
+        return Response(
+            status=HTTP_200_OK,
+            data=serializer.data
+        )
     
     def create(self, request: Request) -> Response:
         serializer = CreateVideoRequestSerializer(data=request.data)
