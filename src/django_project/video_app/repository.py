@@ -9,7 +9,6 @@ from django_project.video_app.models import Video as VideoModel, AudioVideoMedia
 
 class DjangoORMVideoRepository(VideoRepository):
     def save(self, video: Video) -> None:
-        
         with transaction.atomic():
             video_model = VideoModel(
                 title=video.title,
@@ -19,6 +18,7 @@ class DjangoORMVideoRepository(VideoRepository):
                 published=video.published,
                 rating=video.rating                
             )
+            video_model.save()
             
             video_model.categories.set(video.categories)
             video_model.genres.set(video.genres)
