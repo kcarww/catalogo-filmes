@@ -29,3 +29,9 @@ GET http://localhost:8000/api/videos?order_by=title&current_page=2
 
 # @name get_video
 GET http://localhost:8000/api/videos/eaacb7df-086d-4a09-987d-3253d55ad5fb
+
+
+###
+
+# @name delete_video
+DELETE http://localhost:8000/api/videos/eaacb7df-086d-4a09-987d-3253d55ad5fb/

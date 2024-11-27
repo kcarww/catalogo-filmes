@@ -59,3 +59,6 @@ class RetrieveVideoRequestSerializer(serializers.Serializer):
     
 class RetrieveVideoResponseSerializer(serializers.Serializer):
     data = VideoResponseSerializer(source='*') # type: ignore
+    
+class DeleteVideoRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()

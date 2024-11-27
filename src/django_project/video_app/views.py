@@ -6,9 +6,11 @@ from rest_framework.status import (
     HTTP_200_OK,
     HTTP_404_NOT_FOUND,
     HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT
 )
 
 from core.video.application.use_cases.create_video_without_media import CreateVideoWithoutMedia
+from core.video.application.use_cases.delete_video_use_case import DeleteVideo, DeleteVideoRequest
 from core.video.application.use_cases.exceptions import VideoNotFound
 from core.video.application.use_cases.get_video_use_case import GetVideo, GetVideoRequest
 from core.video.application.use_cases.list_video_use_case import ListVideo, ListVideoRequest
@@ -16,7 +18,7 @@ from django_project.cast_member_app.repository import DjangoORMCastMemberReposit
 from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.genre_app.repository import DjangoORMGenreRepository
 from django_project.video_app.repository import DjangoORMVideoRepository
-from django_project.video_app.serializers import CreateVideoRequestSerializer, CreateVideoResponseSerializer, ListVideoResponseSerializer, RetrieveVideoRequestSerializer, RetrieveVideoResponseSerializer
+from django_project.video_app.serializers import CreateVideoRequestSerializer, CreateVideoResponseSerializer, DeleteVideoRequestSerializer, ListVideoResponseSerializer, RetrieveVideoRequestSerializer, RetrieveVideoResponseSerializer
 
 class VideoViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
@@ -75,6 +77,15 @@ class VideoViewSet(viewsets.ViewSet):
         raise NotImplementedError
     
     def destroy(self, request: Request, pk: UUID = None):
-        raise NotImplementedError
+        serializer = DeleteVideoRequestSerializer(data={"id": pk})
+        serializer.is_valid(raise_exception=True)
+        
+        use_case = DeleteVideo(repository=DjangoORMVideoRepository())
+        try:
+            use_case.execute(request=DeleteVideoRequest(id=serializer.validated_data["id"])) # type: ignore
+        except VideoNotFound:
+            return Response(HTTP_404_NOT_FOUND)
+        
+        return Response(status=HTTP_204_NO_CONTENT)
         
         
