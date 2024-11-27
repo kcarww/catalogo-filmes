@@ -9,12 +9,14 @@ from rest_framework.status import (
 )
 
 from core.video.application.use_cases.create_video_without_media import CreateVideoWithoutMedia
+from core.video.application.use_cases.exceptions import VideoNotFound
+from core.video.application.use_cases.get_video_use_case import GetVideo, GetVideoRequest
 from core.video.application.use_cases.list_video_use_case import ListVideo, ListVideoRequest
 from django_project.cast_member_app.repository import DjangoORMCastMemberRepository
 from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.genre_app.repository import DjangoORMGenreRepository
 from django_project.video_app.repository import DjangoORMVideoRepository
-from django_project.video_app.serializers import CreateVideoRequestSerializer, CreateVideoResponseSerializer, ListVideoResponseSerializer
+from django_project.video_app.serializers import CreateVideoRequestSerializer, CreateVideoResponseSerializer, ListVideoResponseSerializer, RetrieveVideoRequestSerializer, RetrieveVideoResponseSerializer
 
 class VideoViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
@@ -47,6 +49,23 @@ class VideoViewSet(viewsets.ViewSet):
         return Response(
             status=HTTP_201_CREATED,
             data=CreateVideoResponseSerializer(output).data
+        )
+        
+    def retrieve(self, request: Request, pk: UUID = None) -> Response:
+        serializer = RetrieveVideoRequestSerializer(data={"id": pk})
+        serializer.is_valid(raise_exception=True)
+        
+        use_case = GetVideo(repository=DjangoORMVideoRepository())
+        try:
+            result = use_case.execute(request=GetVideoRequest(id=serializer.validated_data["id"])) # type: ignore
+        except VideoNotFound:
+            return Response(HTTP_404_NOT_FOUND)
+        
+        video_output = RetrieveVideoResponseSerializer(instance=result)
+
+        return Response(
+            status=HTTP_200_OK,
+            data=video_output.data
         )
         
     def update(self, request: Request, pk: UUID = None):

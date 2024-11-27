@@ -53,3 +53,9 @@ class ListVideoOutputMetaSerializer(serializers.Serializer):
 class ListVideoResponseSerializer(serializers.Serializer):
     data = VideoResponseSerializer(many=True) # type: ignore
     meta = ListVideoOutputMetaSerializer()
+    
+class RetrieveVideoRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    
+class RetrieveVideoResponseSerializer(serializers.Serializer):
+    data = VideoResponseSerializer(source='*') # type: ignore

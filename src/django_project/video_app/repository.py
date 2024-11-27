@@ -64,7 +64,7 @@ class DjangoORMVideoRepository(VideoRepository):
                     video_model.description = video.description
                     video_model.launch_year = video.launch_year
                     video_model.duration = video.duration
-                    video_model.rating = video.rating
+                    video_model.rating = video.rating # type: ignore
                     video_model.published = video.published
 
                     video_model.save()
@@ -78,7 +78,7 @@ class VideoModelMapper:
             description=model.description,
             launch_year=model.launch_year,
             duration=model.duration,
-            rating=model.rating,
+            rating=model.rating, # type: ignore
             published=model.published,
             categories=set(model.categories.values_list("id", flat=True)),
             genres=set(model.genres.values_list("id", flat=True)),
