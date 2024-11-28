@@ -33,8 +33,6 @@ class ImageMedia:
 
 @dataclass(frozen=True)
 class AudioVideoMedia:
-    id: UUID
-    check_sum: str
     name: str
     raw_location: str
     encoded_location: str

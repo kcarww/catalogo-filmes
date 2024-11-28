@@ -3,9 +3,10 @@ POST http://localhost:8000/api/videos/
 Content-Type: application/json
 
 {
-    "title": "Interestellar",
+    "title": "Interestellar 3",
     "description": "Description 1",
     "launch_year": 2020,
+    "opened": false,
     "published": true,
     "rating": "ER",
     "duration": 1,

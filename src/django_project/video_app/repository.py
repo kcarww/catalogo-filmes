@@ -14,6 +14,7 @@ class DjangoORMVideoRepository(VideoRepository):
                 title=video.title,
                 description=video.description,
                 launch_year=video.launch_year,
+                opened=video.opened,
                 duration=video.duration,
                 published=video.published,
                 rating=video.rating                
@@ -63,6 +64,7 @@ class DjangoORMVideoRepository(VideoRepository):
                     video_model.title = video.title
                     video_model.description = video.description
                     video_model.launch_year = video.launch_year
+                    video_model.opened = video.opened
                     video_model.duration = video.duration
                     video_model.rating = video.rating # type: ignore
                     video_model.published = video.published
@@ -77,9 +79,9 @@ class VideoModelMapper:
             title=model.title,
             description=model.description,
             launch_year=model.launch_year,
+            opened=model.opened,
             duration=model.duration,
             rating=model.rating, # type: ignore
-            published=model.published,
             categories=set(model.categories.values_list("id", flat=True)),
             genres=set(model.genres.values_list("id", flat=True)),
             cast_members=set(model.cast_members.values_list("id", flat=True)),
@@ -87,12 +89,10 @@ class VideoModelMapper:
         
         if model.video:
             video.video = AudioVideoMedia(
-                id=model.video.id,
                 name=model.video.name,
                 raw_location=model.video.raw_location,
                 encoded_location=model.video.encoded_location,
                 status=model.video.status,
-                check_sum=model.video.check_sum,
             )
         
         return video

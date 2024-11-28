@@ -1,17 +1,18 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal
 from uuid import UUID
 
 from core._shared.domain.entity import Entity
 from core.video.domain.value_objects import AudioVideoMedia, ImageMedia, MediaStatus, Rating
 
-@dataclass
+@dataclass(slots=True, kw_only=True)
 class Video(Entity):
     title: str
     description: str
     launch_year: int
     duration: Decimal
-    published: bool
+    opened: bool
+    published: bool = field(default=False, init=False)
     rating: Rating
     
     categories: set[UUID]

@@ -26,6 +26,7 @@ class CreateVideoRequestSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     description = serializers.CharField()
     launch_year = serializers.IntegerField()
+    opened = serializers.BooleanField()
     rating = VideoRatingField(required=True)
     duration = serializers.IntegerField()
     categories = SetField(child=serializers.UUIDField(), required=False)

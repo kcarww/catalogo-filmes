@@ -12,6 +12,7 @@ class Video(models.Model):
     description = models.TextField()
     launch_year = models.IntegerField()
     duration = models.DecimalField(max_digits=10, decimal_places=2)
+    opened = models.BooleanField(default=False)
     published = models.BooleanField()
     rating = models.CharField(max_length=10, choices=RATING_CHOICES)
 
