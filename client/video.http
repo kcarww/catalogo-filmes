@@ -36,3 +36,12 @@ GET http://localhost:8000/api/videos/eaacb7df-086d-4a09-987d-3253d55ad5fb
 
 # @name delete_video
 DELETE http://localhost:8000/api/videos/eaacb7df-086d-4a09-987d-3253d55ad5fb/
+
+
+###
+
+# @name upload_video
+PATCH http://localhost:8000/api/videos/1e3e4bb6-91b4-4723-a1ff-eecfbf7e8f55/
+Content-Type: multipart/form-data
+
+video_file=@C:\\tmp\\codeflix-storage\\videos\\121\\video.mp4;type=video/mp4

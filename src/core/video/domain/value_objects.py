@@ -1,7 +1,8 @@
 import enum
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto, unique
 from uuid import UUID
+import uuid
 
 
 @unique
@@ -31,8 +32,9 @@ class ImageMedia:
     location: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class AudioVideoMedia:
+    id: UUID = field(default_factory=uuid.uuid4)
     name: str
     raw_location: str
     encoded_location: str

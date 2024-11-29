@@ -9,11 +9,13 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT
 )
 
+from core._shared.infrastructure.storage.local_storage import LocalStorage
 from core.video.application.use_cases.create_video_without_media import CreateVideoWithoutMedia
 from core.video.application.use_cases.delete_video_use_case import DeleteVideo, DeleteVideoRequest
 from core.video.application.use_cases.exceptions import VideoNotFound
 from core.video.application.use_cases.get_video_use_case import GetVideo, GetVideoRequest
 from core.video.application.use_cases.list_video_use_case import ListVideo, ListVideoRequest
+from core.video.application.use_cases.upload_video import UploadVideo
 from django_project.cast_member_app.repository import DjangoORMCastMemberRepository
 from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.genre_app.repository import DjangoORMGenreRepository
@@ -74,7 +76,27 @@ class VideoViewSet(viewsets.ViewSet):
         raise NotImplementedError
     
     def partial_update(self, request: Request, pk: UUID = None):
-        raise NotImplementedError
+        file = request.FILES["video_file"] # type: ignore
+        content = file.read() # type: ignore
+        content_type = file.content_type # type: ignore
+
+        upload_video = UploadVideo(
+            repository=DjangoORMVideoRepository(),
+            storage_service=LocalStorage()
+        )
+        try:
+            upload_video.execute(
+                UploadVideo.Input(
+                    video_id=pk,
+                    file_name=file.name, # type: ignore
+                    content=content,
+                    content_type=content_type # type: ignore
+                )
+            )
+        except VideoNotFound:
+            return Response(status=404)
+
+        return Response(status=200)
     
     def destroy(self, request: Request, pk: UUID = None):
         serializer = DeleteVideoRequestSerializer(data={"id": pk})

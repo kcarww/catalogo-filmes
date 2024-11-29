@@ -45,17 +45,19 @@ class DjangoORMVideoRepository(VideoRepository):
         with transaction.atomic():
             try:
                 video_model = VideoModel.objects.get(pk=video.id)
+                
             except VideoModel.DoesNotExist:
                 return None
             else:
                 with transaction.atomic():
-                    AudioVideoMediaModel.objects.filter(id=video_model.video.id).delete() # type: ignore
-                    video_model.video = AudioVideoMediaModel( # type: ignore
+                    AudioVideoMediaModel.objects.filter(id=video_model.video_id).delete() # type: ignore
+                    video_model.video = AudioVideoMediaModel.objects.create( # type: ignore
                         name=video.video.name,
                         raw_location=video.video.raw_location,
                         encoded_location=video.video.encoded_location,
                         status=video.video.status,
                     ) if video.video else None
+
                     
                     video_model.categories.set(video.categories)
                     video_model.genres.set(video.genres)
