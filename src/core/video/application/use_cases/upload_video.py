@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from uuid import UUID
 
+from core._shared.events.message_bus import MessageBus
 from core._shared.infrastructure.storage.abstract_storage import AbstractStorage
+from core.video.application.events.integration_events import AudioVideoMediaUpdatedIntegrationEvent
 from core.video.application.use_cases.exceptions import VideoNotFound
-from core.video.domain.value_objects import AudioVideoMedia, MediaStatus
+from core.video.domain.value_objects import AudioVideoMedia, MediaStatus, MediaType
 from core.video.domain.video_repository import VideoRepository
 
 
@@ -16,9 +18,15 @@ class UploadVideo:
         content: bytes
         content_type: str
         
-    def __init__(self, repository: VideoRepository, storage_service: AbstractStorage):
+    def __init__(
+            self,
+            repository: VideoRepository,
+            storage_service: AbstractStorage,
+            message_bus: MessageBus
+            ):
         self.repository = repository
         self.storage_service = storage_service
+        self.message_bus = message_bus
         
     def execute(self, input: Input):
         video = self.repository.get_by_id(input.video_id)
@@ -41,4 +49,12 @@ class UploadVideo:
         
         video.update_video_media(audio_video_media)
         self.repository.update(video)
+
+        self.message_bus.handle([
+            AudioVideoMediaUpdatedIntegrationEvent(
+                resource_id=f"{str(video.id)}.{MediaType.VIDEO}",
+                file_path=str(file_path)
+            )
+        ])
+
         
