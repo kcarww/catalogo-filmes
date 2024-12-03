@@ -1,9 +1,9 @@
-GET http://localhost:8000/api/categories?order_by=name&current_page=2
+GET http://localhost:8000/api/categories
 
 
 ###
 
-GET http://localhost:8000/api/categories/a78028b2-2b8b-468f-a06e-db717bf40d67
+GET http://localhost:8000/api/categories/ad25cb7b-7af1-43ff-b329-407364423fb3
 
 ###
 
@@ -11,13 +11,13 @@ POST http://localhost:8000/api/categories/
 Content-Type: application/json
 
 {
-  "name": "Crime",
+  "name": "Sports",
   "description": "Best movie"
 }
 
 ###
 
-PUT http://localhost:8000/api/categories/a78028b2-2b8b-468f-a06e-db717bf40d67/
+PUT http://localhost:8000/api/categories/ad25cb7b-7af1-43ff-b329-407364423fb3/
 Content-Type: application/json
 
 {
@@ -25,3 +25,7 @@ Content-Type: application/json
   "description": "Category 2 description",
   "is_active": true
 }
+
+###
+
+DELETE http://localhost:8000/api/categories/ad25cb7b-7af1-43ff-b329-407364423fb3/
