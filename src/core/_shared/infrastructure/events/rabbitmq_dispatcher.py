@@ -19,8 +19,8 @@ class RabbitMQDispatcher(EventDispatcher):
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue=self.queue)
 
-        self.channel.basic_publish(exchange='', routing_key=self.queue, body=json.dumps(event.payload))
+        self.channel.basic_publish(exchange='', routing_key=self.queue, body=json.dumps(event.payload)) # type: ignore
         print(f"Sent: {event} to queue {self.queue}")
 
     def close(self):
-        self.connection.close()
+        self.connection.close()  # type: ignore
