@@ -31,6 +31,14 @@ class ImageMedia:
     name: str
     location: str
 
+@unique
+class MediaType(StrEnum):
+    VIDEO = "VIDEO"
+    TRAILER = "TRAILER"
+    BANNER = "BANNER"
+    THUMBNAIL = "THUMBNAIL"
+    THUMBNAIL_HALF = "THUMBNAIL_HALF"
+
 
 @dataclass(frozen=True, kw_only=True)
 class AudioVideoMedia:
@@ -39,11 +47,23 @@ class AudioVideoMedia:
     raw_location: str
     encoded_location: str
     status: MediaStatus
+    media_type: MediaType
 
-@unique
-class MediaType(StrEnum):
-    VIDEO = "VIDEO"
-    TRAILER = "TRAILER"
-    BANNER = "BANNER"
-    THUMBNAIL = "THUMBNAIL"
-    THUMBNAIL_HALF = "THUMBNAIL_HALF"
+    def complete(self, encoded_location: str):
+        return AudioVideoMedia(
+            name=self.name,
+            raw_location=self.raw_location,
+            encoded_location=encoded_location,
+            status=MediaStatus.COMPLETED,
+            media_type=self.media_type
+        )
+    
+    def fail(self):
+        return AudioVideoMedia(
+            name=self.name,
+            raw_location=self.raw_location,
+            encoded_location=self.encoded_location,
+            status=MediaStatus.ERROR,
+            media_type=self.media_type
+        )
+

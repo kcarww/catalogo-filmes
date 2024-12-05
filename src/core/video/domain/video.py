@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from decimal import Decimal
 from uuid import UUID
-
 from core._shared.domain.entity import Entity
 from core.video.domain.value_objects import AudioVideoMedia, ImageMedia, MediaStatus, Rating
 
@@ -91,4 +90,13 @@ class Video(Entity):
 
     def update_trailer(self, trailer: AudioVideoMedia) -> None:
         self.trailer = trailer
+        self.validate()
+
+    def process(self, status: MediaStatus, encoded_location: str = "") -> None:
+        if status == MediaStatus.COMPLETED:
+            self.video = self.video.complete(encoded_location) # type: ignore
+            self.publish()
+        else:
+            self.video = self.video.fail() # type: ignore
+
         self.validate()

@@ -11,13 +11,13 @@ Content-Type: application/json
     "rating": "ER",
     "duration": 1,
     "categories": [
-        "91975f9a-f4a0-4c7d-b23f-cd10e3fd501c"
+        "de08c424-045c-4054-a345-66f23ccface6"
     ],
     "genres": [
-        "c65d76ae-bd86-4861-9554-8deedf2fbb65"
+        "68d8cb3a-1be7-454f-983f-dd7a3182ee6f"
     ],
     "cast_members": [
-        "1117d3af-a01e-4d7f-b95a-af4cf8afb0cb"
+        "681eabdf-ed3b-4af3-8365-79971f1bb494"
     ]
 }
 

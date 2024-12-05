@@ -9,6 +9,7 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT
 )
 
+from core._shared.events.message_bus import MessageBus
 from core._shared.infrastructure.storage.local_storage import LocalStorage
 from core.video.application.use_cases.create_video_without_media import CreateVideoWithoutMedia
 from core.video.application.use_cases.delete_video_use_case import DeleteVideo, DeleteVideoRequest
@@ -82,7 +83,8 @@ class VideoViewSet(viewsets.ViewSet):
 
         upload_video = UploadVideo(
             repository=DjangoORMVideoRepository(),
-            storage_service=LocalStorage()
+            storage_service=LocalStorage(),
+            message_bus=MessageBus()
         )
         try:
             upload_video.execute(
