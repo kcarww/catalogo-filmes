@@ -8,7 +8,7 @@ load_dotenv()
 
 class JWTAuthService(AuthServiceInterface):
     def __init__(self, token: str = ""):
-        self.public_key = base64.b64decode(f'{os.getenv("AUTH_PUBLIC_KEY")}')
+        self.public_key = os.getenv("AUTH_PUBLIC_KEY")
         self.token = token.replace("Bearer ", "", 1)
 
     def _decode_token(self) -> dict:

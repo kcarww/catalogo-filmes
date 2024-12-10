@@ -14,9 +14,14 @@ from core.category.application.use_cases.update_category import UpdateCategory, 
 from django_project.category_app import serializers
 from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.category_app.serializers import  CreateCategoryRequestSerializer, CreateCategoryResponseSerializer, DeleteCategoryRequestSerializer, ListCategoryResponseSerializer, RetrieveCategoryRequestSerializer, RetrieveCategoryResponseSerializer, UpdateCategoryRequestSerializer
+from django_project.permissions import IsAdmin, IsAuthenticated
 
 
 class CategoryViewSet(viewsets.ViewSet):
+
+    permission_classes = [IsAuthenticated & IsAdmin]
+
+
     def list(self, request: Request) -> Response:
         order_by = request.query_params.get("order_by", "name")
         current_page = request.query_params.get("current_page", 1)

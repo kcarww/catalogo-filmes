@@ -1,4 +1,17 @@
+@access_token = {{session.response.body.access_token}}
+
+###
+
+# @name session
+POST http://localhost:8080/realms/codeflix/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=codeflix-frontend&grant_type=password&username=admin@admin.com&password=admin
+
+###
+
 GET http://localhost:8000/api/categories
+Authorization: Bearer {{access_token}}
 
 
 ###
